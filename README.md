@@ -110,44 +110,45 @@ These screenshots were captured one by one from a local running build of Sharkle
 	<a href="https://sharkle-game.vercel.app/"><strong>▶ Play the live animated game</strong></a>
 </p>
 
+
 <details open>
-	<summary><strong>Frame 1: Opening screen</strong></summary>
+<summary><strong>Frame 1: Opening screen</strong></summary>
 
-	<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/01-opening-screen.png" alt="Sharkle opening screen" width="720"></a>
+<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/01-opening-screen.png" alt="Sharkle opening screen" width="720"></a>
 
-	The title screen introduces Sharkle and starts the first audio and tutorial interaction.
+The title screen introduces Sharkle and starts the first audio and tutorial interaction.
 </details>
 
 <details>
-	<summary><strong>Frame 2: Controls tutorial</strong></summary>
+<summary><strong>Frame 2: Controls tutorial</strong></summary>
 
-	<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/02-controls-tutorial.png" alt="Sharkle controls tutorial" width="720"></a>
+<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/02-controls-tutorial.png" alt="Sharkle controls tutorial" width="720"></a>
 
-	The tutorial explains movement, jumping, bubble shooting, and the fin slap before gameplay is released.
+The tutorial explains movement, jumping, bubble shooting, and the fin slap before gameplay is released.
 </details>
 
 <details>
-	<summary><strong>Frame 3: Poison quest</strong></summary>
+<summary><strong>Frame 3: Poison quest</strong></summary>
 
-	<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/03-poison-quest.png" alt="Sharkle poison quest" width="720"></a>
+<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/03-poison-quest.png" alt="Sharkle poison quest" width="720"></a>
 
-	The quest screen establishes the objective: collect every poison capsule to unlock the attack needed for the final boss.
+The quest screen establishes the objective: collect every poison capsule to unlock the attack needed for the final boss.
 </details>
 
 <details>
-	<summary><strong>Frame 4: Gameplay begins</strong></summary>
+<summary><strong>Frame 4: Gameplay begins</strong></summary>
 
-	<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/04-gameplay-start.png" alt="Sharkle gameplay start" width="720"></a>
+<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/04-gameplay-start.png" alt="Sharkle gameplay start" width="720"></a>
 
-	The HUD shows health, coin progress, poison progress, audio controls, and the first stretch of the underwater level.
+The HUD shows health, coin progress, poison progress, audio controls, and the first stretch of the underwater level.
 </details>
 
 <details>
-	<summary><strong>Frame 5: Live action</strong></summary>
+<summary><strong>Frame 5: Live action</strong></summary>
 
-	<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/05-gameplay-action.png" alt="Sharkie moving and attacking during gameplay" width="720"></a>
+<a href="https://sharkle-game.vercel.app/"><img src="assets/screenshots/05-gameplay-action.png" alt="Sharkie moving and attacking during gameplay" width="720"></a>
 
-	This runtime frame follows movement, a jump, and a bubble attack. The canvas continues updating every animation frame while GSAP drives enemy and projectile motion.
+This runtime frame follows movement, a jump, and a bubble attack. The canvas continues updating every animation frame while GSAP drives enemy and projectile motion.
 </details>
 
 ### Animation and interaction map
