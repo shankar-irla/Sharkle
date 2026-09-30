@@ -15,6 +15,10 @@ export default class Boss extends MovableObject {
 
     isIntroducing = false;
     isIntroduced = false;
+    navigationMinY = -700;
+    navigationMaxY = 100;
+    attackMoveUntil = 0;
+    attackYTarget = null;
 
     drawReverse = false;
 
@@ -116,18 +120,10 @@ export default class Boss extends MovableObject {
     /**attack */
     attack() {
         if (!this.isTakingDmg && !this.isDead && !this.game.world.level.character.isDead) {
-            /**dash towards character */
-            if (this.drawReverse) {
-                gsap.to(this, { x: this.x + 400, delay: 0.25, duration: .5 });
-            } else {
-                gsap.to(this, { x: this.x - 400, delay: 0.25, duration: .5 });
-            };
-
-            /**animationm and sound */
+            this.attackMoveUntil = Date.now() + 500;
             this.playAnimation(this.ATTACK_ANIMATION);
             this.game.sounds.playSound('./assets/sounds/boss-bite.mp3', false, 0.3, 150);
 
-            /**reset to swim animation after attack */
             this.swimTimeout = setTimeout(() => {
                 this.playAnimation(this.SWIM_ANIMATION);
             }, 750);
@@ -139,12 +135,99 @@ export default class Boss extends MovableObject {
     /**move boss towards character (up or down) when attacking */
     moveTowardsCharacter() {
         if (this.game.world.level.character.y + (this.game.world.level.character.height / 2) < 1080 / 2) {
-            gsap.to(this, { y: -400, delay: 0.25, duration: .5 });
-            gsap.to(this, { y: -200, delay: 0.75, duration: .5 });
+            this.attackYTarget = -400;
         } else {
-            gsap.to(this, { y: 100, delay: 0.25, duration: .5 });
-            gsap.to(this, { y: -200, delay: 0.75, duration: .5 });
+            this.attackYTarget = 100;
         };
+
+        clearTimeout(this.attackYTimeout);
+        this.attackYTimeout = setTimeout(() => {
+            this.attackYTarget = -200;
+        }, 500);
+        clearTimeout(this.resetAttackYTimeout);
+        this.resetAttackYTimeout = setTimeout(() => {
+            this.attackYTarget = null;
+        }, 1000);
+    };
+
+    /**update movement while keeping a clear route around barriers */
+    updateMovement() {
+        if (this.isIntroduced && !this.isTakingDmg && !this.isDead && !this.game.world.level.character.isDead) {
+            const direction = this.drawReverse ? 1 : -1;
+            const movementSpeed = Date.now() < this.attackMoveUntil ? this.speed * 2 : this.speed;
+            const nextX = this.x + direction * movementSpeed;
+            const nearbyBarriers = this.getNearbyBarriers(direction);
+            const preferredY = this.attackYTarget ?? -200;
+            const safeY = this.findSafeY(nearbyBarriers, preferredY);
+
+            if (safeY === null) {
+                return;
+            };
+
+            if (Math.abs(this.y - safeY) > this.speed) {
+                this.y += Math.sign(safeY - this.y) * this.speed;
+                return;
+            };
+
+            if (!nearbyBarriers.every(barrier => this.isClearAtY(this.y, barrier))) {
+                this.y = safeY;
+                return;
+            };
+
+            this.x = nextX;
+            this.changeMovementDirection();
+        };
+    };
+
+    getNearbyBarriers(direction) {
+        const bossLeft = this.x + this.hitboxLeft;
+        const bossRight = this.x + this.width - this.hitboxRight;
+        const lookAhead = 300;
+
+        return this.game.world.level.barriers.filter(barrier => {
+            const barrierLeft = barrier.x + barrier.hitboxLeft;
+            const barrierRight = barrier.x + barrier.width - barrier.hitboxRight;
+
+            if (direction < 0) {
+                return barrierRight >= bossLeft - lookAhead && barrierLeft <= bossRight;
+            };
+
+            return barrierLeft <= bossRight + lookAhead && barrierRight >= bossLeft;
+        });
+    };
+
+    findSafeY(barriers, preferredY) {
+        const candidates = new Set([this.navigationMinY, this.navigationMaxY, this.y, preferredY]);
+
+        barriers.forEach(barrier => {
+            const barrierTop = barrier.y + barrier.hitboxTop;
+            const barrierBottom = barrier.y + barrier.height - barrier.hitboxBottom;
+            candidates.add(barrierTop - (this.height - this.hitboxBottom) - 1);
+            candidates.add(barrierBottom - this.hitboxTop + 1);
+        });
+
+        const safeCandidates = [...candidates].filter(y =>
+            y >= this.navigationMinY &&
+            y <= this.navigationMaxY &&
+            barriers.every(barrier => this.isClearAtY(y, barrier))
+        );
+
+        if (safeCandidates.length === 0) {
+            return null;
+        };
+
+        return safeCandidates.reduce((bestY, y) =>
+            Math.abs(y - preferredY) < Math.abs(bestY - preferredY) ? y : bestY
+        );
+    };
+
+    isClearAtY(y, barrier) {
+        const bossTop = y + this.hitboxTop;
+        const bossBottom = y + this.height - this.hitboxBottom;
+        const barrierTop = barrier.y + barrier.hitboxTop;
+        const barrierBottom = barrier.y + barrier.height - barrier.hitboxBottom;
+
+        return bossBottom <= barrierTop || bossTop >= barrierBottom;
     };
 
     takeDmg() {
